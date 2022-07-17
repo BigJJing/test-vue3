@@ -5,6 +5,7 @@
         <li 
             v-for="item in tableDataShow"
             @click="selectRow(item)"
+            :key="item.id"
             :class="`row ${currentRow.id === item.id ? 'selected' : ''}`"
         >{{item.name}}</li>
     </ul>
@@ -25,7 +26,6 @@
     let timer = null;
     const inBottom = ref(true);
     let maxScrollTop = 0; 
-
     const hasSelected = computed(() => {
         return Object.keys(currentRow.value).length > 0;
     })
@@ -48,7 +48,6 @@
         //滚动到底部
         //如果没有选中，或者滚动条到底部的时候就自动滚动
         if(table.value && !hasSelected.value && inBottom.value) {
-            console.log("!!!!")
             table.value.scrollTop = table.value.scrollHeight;
         }  
         return lastTableDataShow;
@@ -64,14 +63,13 @@
                 }
                 tableData.push(data);
                 tableLength.value++;
-                 
+                setMiddleIndex(tableLength.value - DISPLAY_HALF_NUM)
             }, 100);
         }
     })()
     const stop = () => {
         clearInterval(timer)
     }
-
     const selectRow = (row) => {
         currentRow.value = row;
     }
@@ -134,6 +132,7 @@
             (up && scrollTop > MIN_DISTANCE) ||
             (!up && scrollTop < maxScrollHeight - MIN_DISTANCE)
         ) return;
+        console.log("!!!")
         scrollOverflow(up)
     }
     const loadInitData = (length) => {
@@ -166,4 +165,3 @@
         background: #ccc
     }
 </style>
-
